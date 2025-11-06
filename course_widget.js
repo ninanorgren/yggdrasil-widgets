@@ -6,16 +6,16 @@
   // const DEFAULT_BASE_URL = 'https://onbeat.dance/api/get_courses';
   const DEFAULT_BASE_URL = 'http://localhost:5000/api/get_courses';
 
-  const INLINE_TEMPLATE_HTML = `
+const INLINE_TEMPLATE_HTML = `
 <template id="course-card-template">
   <section class="onbeat-widget-course">
     <div class="onbeat-widget-course__content">
       <h2 class="onbeat-widget-course__title"></h2>
       <p class="onbeat-widget-course__start"></p>
       <p class="onbeat-widget-course__description"></p>
-      <p class="onbeat-widget-course__price"></p>
     </div>
-    <div class="onbeat-widget-course__buttons">
+    <div class="onbeat-widget-course__footer">
+      <span class="onbeat-widget-course__price"></span>
       <button class="onbeat-widget-course__readmore">Read more</button>
     </div>
   </section>
@@ -23,33 +23,39 @@
 `;
 
 
-  const INLINE_STYLES = `
+const INLINE_STYLES = `
 .onbeat-widget {
   font-family: system-ui, sans-serif;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Course Card */
 .onbeat-widget-course {
   background: white;
   border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 1.5rem;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+  padding: 1.2rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   max-width: 500px;
   width: 100%;
-  gap: 1rem;
+  gap: 0.75rem;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
-/* Content area (title + start stacked) */
+/* Content area (title + start + description stacked) */
 .onbeat-widget-course__content {
   display: flex;
   flex-direction: column;
   flex: 1;
+  box-sizing: border-box;
 }
 
 /* Title */
@@ -58,6 +64,7 @@
   font-weight: 600;
   margin: 0;
   line-height: 1.2;
+  word-break: break-word;
 }
 
 /* Start date */
@@ -67,11 +74,36 @@
   margin-top: 0.25rem;
 }
 
-/* Button area */
-.onbeat-widget-course__buttons {
+/* Description */
+.onbeat-widget-course__description {
+  font-size: 0.95rem;
+  white-space: pre-line;
+  color: #333;
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;       /* ← number of visible lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer row (price + button on same line) */
+.onbeat-widget-course__footer {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Price */
+.onbeat-widget-course__price {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3f5b5b;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 
 /* Read more button */
@@ -82,10 +114,12 @@
   border-radius: 9999px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
 }
 
 .onbeat-widget-course__readmore:hover {
-  background: #f3f3f3;
+  background: #2c4040;
 }
 
 /* ------------------------------
@@ -93,14 +127,13 @@
 --------------------------------*/
 @media (max-width: 480px) {
   .onbeat-widget-course {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: left;
+    max-width: 100%;
+    width: 100%;
   }
 
-  .onbeat-widget-course__buttons {
-    justify-content: flex-start;
-    margin-top: 0.75rem;
+  .onbeat-widget-course__footer {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .onbeat-widget-course__readmore {
@@ -109,6 +142,7 @@
   }
 }
 `;
+
 
 
   const STYLE_ELEMENT_ID = 'onbeat-course-widget-styles';
@@ -183,16 +217,15 @@
 
     url.href += '/' + settings.public_token;
 
-    const hasCourseId = Array.isArray(settings.course_id) && settings.course_id.length == 1;
+    const hasCourseId = settings.course_id != null;
     const hasCourseTypes = Array.isArray(settings.course_type) && settings.course_type.length > 0;
 
     // Rule: course_type take precedence if both exist; when both are missing request all data
-    if (hasCourseTypes) {
-      url.searchParams.set('course_type', settings.course_type.join(','));
-    } else if (hasCourseId) {
-      url.searchParams.set('course_id', settings.course_id.join(','));
+    if (hasCourseId) {
+        url.searchParams.set('course_id', settings.course_id);
+    } else if (hasCourseTypes) {
+        url.searchParams.set('course_type', settings.course_type.join(','));
     }
-
     return url.toString();
   }
 
@@ -210,15 +243,24 @@
     }
 
     const start = wrapper.querySelector('.onbeat-widget-course__start');
-    if (start) {
-      start.textContent = course.start
-        ? `Start: ${new Date(course.start).toLocaleDateString('en-GB', {
+    if (course.start) {
+        const dateStr = new Date(course.start).toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
-            })}`
-        : '';
-    }
+        });
+
+        // Parse the time and format to HH:MM
+        let timeStr = '';
+        if (course.starttime) {
+            const timeObj = new Date(`1970-01-01T${course.starttime}`);
+            timeStr = timeObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        } else {
+            const timeStr = '';
+        }
+
+        start.textContent = `Start: ${dateStr}, ${timeStr}`;
+        }
 
     const description = wrapper.querySelector('.onbeat-widget-course__description');
     if (description) {

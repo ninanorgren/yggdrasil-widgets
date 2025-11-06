@@ -1,9 +1,8 @@
 <html>
 
-    <h1 class="mb-3">Training Metrics Widget</h1>
+    <h1 class="mb-3">Test page for Onbeat widgets</h1>
     <p class="text-muted">
-        This page renders the widget using the public quality question set endpoint. Use it to verify
-        behaviour while developing locally.
+        This page is for testing the widgets from Onbeat
     </p>
     
     <div class="onbeat-widget" id="onbeat-widget-container"></div>
@@ -12,7 +11,7 @@
     <script>
         OnbeatCourseWidget({
             container: '#onbeat-widget-container',
-            course_type: ['courses', 'events'],
+            course_type: ['all'],
             public_token: 'bf5RUFJKh7r2TIpNRSZTJewVdfFP-rh1gOK6coG3tUQ'
         }).catch((error) => {
             console.error('OnbeatCourseWidget failed to initialise', error);
