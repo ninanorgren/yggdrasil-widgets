@@ -3,7 +3,7 @@
    * Base endpoint for course queries
    */
 
-  const DEFAULT_BASE_URL = 'https://test.onbeat.dance/api/get_courses';
+  const DEFAULT_BASE_URL = 'https://dev.onbeat.dance/api/get_courses';
   
 const INLINE_TEMPLATE_HTML = `
 <template id="course-card-template">
@@ -304,7 +304,7 @@ const INLINE_STYLES = `
   }
 
   async function OnbeatCourseWidget(options) {
-
+    console.log('hello');
     const settings = { ...DEFAULT_OPTIONS, ...options };
     const container = resolveContainer(settings.container);
     if (!container) {
@@ -317,6 +317,7 @@ const INLINE_STYLES = `
     showMessage(container, 'Loading courses...');
 
     const requestUrl = buildRequestUrl(settings);
+    console.log(requestUrl);
 
     let response;
     try {
@@ -325,6 +326,7 @@ const INLINE_STYLES = `
       showMessage(container, 'Unable to show courses');
       throw error;
     }
+    console.log(response);
 
     if (!response.ok) {
       showMessage(container, 'Failed to load courses.');
