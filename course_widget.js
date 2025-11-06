@@ -304,7 +304,6 @@ const INLINE_STYLES = `
   }
 
   async function OnbeatCourseWidget(options) {
-    console.log('hello');
     const settings = { ...DEFAULT_OPTIONS, ...options };
     const container = resolveContainer(settings.container);
     if (!container) {
@@ -317,7 +316,6 @@ const INLINE_STYLES = `
     showMessage(container, 'Loading courses...');
 
     const requestUrl = buildRequestUrl(settings);
-    console.log(requestUrl);
 
     let response;
     try {
@@ -326,7 +324,6 @@ const INLINE_STYLES = `
       showMessage(container, 'Unable to show courses');
       throw error;
     }
-    console.log(response);
 
     if (!response.ok) {
       showMessage(container, 'Failed to load courses.');
