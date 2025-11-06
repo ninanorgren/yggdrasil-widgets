@@ -9,14 +9,19 @@
   const INLINE_TEMPLATE_HTML = `
 <template id="course-card-template">
   <section class="onbeat-widget-course">
-    <h2 class="onbeat-widget-course__title"></h2>
-    <p class="onbeat-widget-course__start"></p>
+    <div class="onbeat-widget-course__content">
+      <h2 class="onbeat-widget-course__title"></h2>
+      <p class="onbeat-widget-course__start"></p>
+      <p class="onbeat-widget-course__description"></p>
+      <p class="onbeat-widget-course__price"></p>
+    </div>
     <div class="onbeat-widget-course__buttons">
       <button class="onbeat-widget-course__readmore">Read more</button>
     </div>
   </section>
 </template>
 `;
+
 
   const INLINE_STYLES = `
 .onbeat-widget {
@@ -26,6 +31,7 @@
   gap: 1rem;
 }
 
+/* Course Card */
 .onbeat-widget-course {
   background: white;
   border-radius: 1rem;
@@ -36,27 +42,40 @@
   align-items: center;
   max-width: 500px;
   width: 100%;
+  gap: 1rem;
 }
 
+/* Content area (title + start stacked) */
+.onbeat-widget-course__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Title */
 .onbeat-widget-course__title {
   font-size: 1.25rem;
   font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
 }
 
+/* Start date */
+.onbeat-widget-course__start {
+  font-size: 0.95rem;
+  color: #444;
+  margin-top: 0.25rem;
+}
+
+/* Button area */
 .onbeat-widget-course__buttons {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
+/* Read more button */
 .onbeat-widget-course__readmore {
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 9999px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.onbeat-widget-course__register {
   background: #3f5b5b;
   color: white;
   border: none;
@@ -64,7 +83,33 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
+
+.onbeat-widget-course__readmore:hover {
+  background: #f3f3f3;
+}
+
+/* ------------------------------
+   Responsive adjustments
+--------------------------------*/
+@media (max-width: 480px) {
+  .onbeat-widget-course {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .onbeat-widget-course__buttons {
+    justify-content: flex-start;
+    margin-top: 0.75rem;
+  }
+
+  .onbeat-widget-course__readmore {
+    width: 100%;
+    text-align: center;
+  }
+}
 `;
+
 
   const STYLE_ELEMENT_ID = 'onbeat-course-widget-styles';
 
@@ -155,7 +200,6 @@
   function renderCourseCard(container, course, template) {
     const fragment = template.content.cloneNode(true);
     const wrapper = fragment.firstElementChild;
-    console.log(wrapper);
     if (!wrapper) {
       return null;
     }
@@ -168,8 +212,22 @@
     const start = wrapper.querySelector('.onbeat-widget-course__start');
     if (start) {
       start.textContent = course.start
-        ? `Starts ${new Date(course.start).toLocaleDateString()}`
+        ? `Start: ${new Date(course.start).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+            })}`
         : '';
+    }
+
+    const description = wrapper.querySelector('.onbeat-widget-course__description');
+    if (description) {
+      description.textContent = course.description ?? '';
+    }
+
+    const price = wrapper.querySelector('.onbeat-widget-course__price');
+    if (price) {
+      price.textContent = course.price ? `Price: ${course.price}`: '';
     }
 
     const readMoreBtn = wrapper.querySelector('.onbeat-widget-course__readmore');
@@ -180,17 +238,6 @@
         });
       } else {
         readMoreBtn.disabled = true;
-      }
-    }
-
-    const registerBtn = wrapper.querySelector('.onbeat-widget-course__register');
-    if (registerBtn) {
-      if (course.registration_url) {
-        registerBtn.addEventListener('click', () => {
-          global.open(course.registration_url, '_blank', 'noopener');
-        });
-      } else {
-        registerBtn.disabled = true;
       }
     }
 
@@ -245,7 +292,6 @@
 
     const payload = await response.json();
     const courses = payload.result;
-    console.log(payload);
     if (Array.isArray(container._courses)) {
       container._courses.forEach((instance) => {
         if (instance && typeof instance.destroy === 'function') {
