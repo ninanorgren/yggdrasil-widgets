@@ -3,9 +3,8 @@
    * Base endpoint for course queries
    */
 
-  // const DEFAULT_BASE_URL = 'https://onbeat.dance/api/get_courses';
-  const DEFAULT_BASE_URL = 'http://localhost:5000/api/get_courses';
-
+  const DEFAULT_BASE_URL = 'https://test.onbeat.dance/api/get_courses';
+  
 const INLINE_TEMPLATE_HTML = `
 <template id="course-card-template">
   <section class="onbeat-widget-course">
