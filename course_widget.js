@@ -5,12 +5,14 @@
 
   const DEFAULT_BASE_URL = 'https://dev.onbeat.dance/api/get_courses';
   
+  
 const INLINE_TEMPLATE_HTML = `
 <template id="course-card-template">
   <section class="onbeat-widget-course">
     <div class="onbeat-widget-course__content">
       <h2 class="onbeat-widget-course__title"></h2>
       <p class="onbeat-widget-course__start"></p>
+      <p class="onbeat-widget-course__opening"></p>
       <p class="onbeat-widget-course__description"></p>
     </div>
     <div class="onbeat-widget-course__footer">
@@ -59,7 +61,7 @@ const INLINE_STYLES = `
 
 /* Title */
 .onbeat-widget-course__title {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
   line-height: 1.2;
@@ -73,12 +75,20 @@ const INLINE_STYLES = `
   margin-top: 0.25rem;
 }
 
+.onbeat-widget-course__opening {
+  font-size: 0.9rem;
+  color: darkred;
+  margin-top: 0.0;'
+  margin-bottom: 0;
+}
+
 /* Description */
 .onbeat-widget-course__description {
   font-size: 0.95rem;
   white-space: pre-line;
   color: #333;
   word-break: break-word;
+  margin-top: 0;
 
   display: -webkit-box;
   -webkit-line-clamp: 3;       /* ← number of visible lines */
@@ -242,6 +252,8 @@ const INLINE_STYLES = `
     }
 
     const start = wrapper.querySelector('.onbeat-widget-course__start');
+    const openingEl = wrapper.querySelector('.onbeat-widget-course__opening');
+    console.log(openingEl);
     if (course.start) {
         const dateStr = new Date(course.start).toLocaleDateString('en-GB', {
             day: 'numeric',
@@ -259,6 +271,22 @@ const INLINE_STYLES = `
         }
 
         start.textContent = `Start: ${dateStr}, ${timeStr}`;
+        }
+
+    if (openingEl) {
+        const openingDate = new Date(course.opening);
+        const now = new Date();
+
+        if (openingDate > now) {
+            const formattedOpening = openingDate.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+            });
+            openingEl.textContent = `Registration opens ${formattedOpening}`;
+        } else {
+            openingEl.textContent = ''; // clear if already open
+        }
         }
 
     const description = wrapper.querySelector('.onbeat-widget-course__description');
