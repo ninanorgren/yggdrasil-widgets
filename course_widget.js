@@ -13,6 +13,7 @@ const INLINE_TEMPLATE_HTML = `
       <h2 class="onbeat-widget-course__title"></h2>
       <p class="onbeat-widget-course__start"></p>
       <p class="onbeat-widget-course__opening"></p>
+      <p class="onbeat-widget-course__closing"></p>
       <p class="onbeat-widget-course__description"></p>
     </div>
     <div class="onbeat-widget-course__footer">
@@ -76,6 +77,13 @@ const INLINE_STYLES = `
 }
 
 .onbeat-widget-course__opening {
+  font-size: 0.9rem;
+  color: darkred;
+  margin-top: 0.0;'
+  margin-bottom: 0;
+}
+
+.onbeat-widget-course__closing {
   font-size: 0.9rem;
   color: darkred;
   margin-top: 0.0;'
@@ -163,6 +171,7 @@ const INLINE_STYLES = `
     course_id: null,
     course_type: 'all',
     public_token: null,
+    description: true,
   };
 
   let cachedCourseTemplate = null;
@@ -229,7 +238,7 @@ const INLINE_STYLES = `
     const hasCourseId = settings.course_id != null;
     const hasCourseTypes = Array.isArray(settings.course_type) && settings.course_type.length > 0;
 
-    // Rule: course_type take precedence if both exist; when both are missing request all data
+    // Rule: course_id take precedence if both exist; when both are missing request all data
     if (hasCourseId) {
         url.searchParams.set('course_id', settings.course_id);
     } else if (hasCourseTypes) {
@@ -239,7 +248,7 @@ const INLINE_STYLES = `
   }
 
 
-  function renderCourseCard(container, course, template) {
+  function renderCourseCard(container, course, template, show_description) {
     const fragment = template.content.cloneNode(true);
     const wrapper = fragment.firstElementChild;
     if (!wrapper) {
@@ -253,7 +262,7 @@ const INLINE_STYLES = `
 
     const start = wrapper.querySelector('.onbeat-widget-course__start');
     const openingEl = wrapper.querySelector('.onbeat-widget-course__opening');
-    console.log(openingEl);
+    const closingEl = wrapper.querySelector('.onbeat-widget-course__closing');
     if (course.start) {
         const dateStr = new Date(course.start).toLocaleDateString('en-GB', {
             day: 'numeric',
@@ -285,13 +294,28 @@ const INLINE_STYLES = `
             });
             openingEl.textContent = `Registration opens ${formattedOpening}`;
         } else {
-            openingEl.textContent = ''; // clear if already open
+            openingEl.remove();
+        }
+        }
+
+    if (closingEl) {
+        const closingDate = new Date(course.closing);
+        const now = new Date();
+
+        if (closingDate < now) {
+            closingEl.textContent = `Registration is already closed`;
+        } else {
+            closingEl.remove();
         }
         }
 
     const description = wrapper.querySelector('.onbeat-widget-course__description');
-    if (description) {
-      description.textContent = course.description ?? '';
+    if (show_description) {
+      if (description) {
+        description.textContent = course.description ?? '';
+      }
+    } else {
+      description.remove();
     }
 
     const price = wrapper.querySelector('.onbeat-widget-course__price');
@@ -378,7 +402,7 @@ const INLINE_STYLES = `
     }
 
     container._courses = courses.map((course) =>
-      renderCourseCard(container, course, courseCardTemplate)
+      renderCourseCard(container, course, courseCardTemplate, settings.description)
     );
   }
 
