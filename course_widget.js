@@ -44,7 +44,7 @@ const INLINE_STYLES = `
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  max-width: 80%;
   width: 100%;
   gap: 0.75rem;
   border: 1px solid lightgrey;
@@ -172,7 +172,8 @@ const INLINE_STYLES = `
     course_type: 'all',
     public_token: null,
     description: true,
-    show_closed: true 
+    show_closed: true,
+    card_width: '100%'
   };
 
   let cachedCourseTemplate = null;
@@ -249,9 +250,15 @@ const INLINE_STYLES = `
   }
 
 
-  function renderCourseCard(container, course, template, show_description) {
+  function renderCourseCard(container, course, template, show_description, card_width) {
     const fragment = template.content.cloneNode(true);
     const wrapper = fragment.firstElementChild;
+
+    // Apply custom width
+    if (card_width) {
+      wrapper.style.maxWidth = card_width;
+    }
+
     if (!wrapper) {
       return null;
     }
@@ -418,7 +425,7 @@ const INLINE_STYLES = `
     }
 
     container._courses = courses.map((course) =>
-      renderCourseCard(container, course, courseCardTemplate, settings.description)
+      renderCourseCard(container, course, courseCardTemplate, settings.description, settings.card_width)
     );
   }
 
