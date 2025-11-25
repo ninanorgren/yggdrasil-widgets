@@ -3,7 +3,7 @@
    * Base endpoint for course queries
    */
 
-  const DEFAULT_BASE_URL = 'https://dev.onbeat.dance/api/get_courses';
+  const DEFAULT_BASE_URL = 'https://onbeat.dance/api/get_courses';
   
   
 const INLINE_TEMPLATE_HTML = `
