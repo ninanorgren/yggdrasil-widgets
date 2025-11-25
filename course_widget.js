@@ -172,6 +172,7 @@ const INLINE_STYLES = `
     course_type: 'all',
     public_token: null,
     description: true,
+    show_closed: true 
   };
 
   let cachedCourseTemplate = null;
@@ -383,7 +384,22 @@ const INLINE_STYLES = `
     }
 
     const payload = await response.json();
-    const courses = payload.result;
+    let courses = payload.result;
+
+    if (!settings.show_closed) {
+      const now = new Date();
+      courses = courses.filter((course) => {
+        const opening = course.opening ? new Date(course.opening) : null;
+        const closing = course.closing ? new Date(course.closing) : null;
+
+        // Only include if registration is currently open
+        const isOpen =
+          (!opening || opening <= now) && (!closing || closing >= now);
+
+        return isOpen;
+      });
+    }
+
     if (Array.isArray(container._courses)) {
       container._courses.forEach((instance) => {
         if (instance && typeof instance.destroy === 'function') {
