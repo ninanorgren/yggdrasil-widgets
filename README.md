@@ -16,17 +16,20 @@ Place this code snippet in the bottom or top of your code:
 ```
 <script src="https://ninanorgren.github.io/yggdrasil-widgets/course_widget.js"></script>
     <script>
-        OnbeatCourseWidget({
-            container: '#onbeat-widget-container',
-            course_type: ['all'],
-            public_token: 'bf5RUFJKh7r2TIpNRSZTJewVdfFP-rh1gOK6coG3tUQ',
-            description: false,
-            show_closed: false
-        }).catch((error) => {
-            console.error('OnbeatCourseWidget failed to initialise', error);
+        document.addEventListener("DOMContentLoaded", () => {
+            OnbeatCourseWidget({
+                container: '#onbeat-widget-container',
+                course_type: ['all'],
+                public_token: 'YOUR_PUBLIC_TOKEN',
+                description: true,
+                show_closed: true,
+                card_width: "80%",
+                card_align: "center"
+            });
         });
     </script>
 ```
+
 
 The following parameters are customizable for the widget:
 
@@ -34,4 +37,5 @@ The following parameters are customizable for the widget:
 * course_type: \<list\> Displays all courses of one or more types. Types can be: 'courses', 'events', 'all'
 * public_token: \<str\> Required to select courses from a specified club
 * description: \<bool\> Show the first 4 lines of the course description. Defaults to true
-* show_closed: \bool\ Show courses where the registration is closed. Defaults to false
+* show_closed: \<bool\> Show courses where the registration is closed. Defaults to false
+* card_align: \<str\> Alignment of cards on page. Valid options are 'left', 'center', 'right'. Defaults to 'left'

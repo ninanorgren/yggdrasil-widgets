@@ -41,7 +41,7 @@ const INLINE_STYLES = `
   background: white;
   border-radius: 1rem;
   box-shadow: 0 3px 3px rgba(0,0,0,0.1);
-  padding: 1.2rem;
+  padding: 0.8rem;
   display: flex;
   flex-direction: column;
   max-width: 80%;
@@ -58,6 +58,7 @@ const INLINE_STYLES = `
   flex-direction: column;
   flex: 1;
   box-sizing: border-box;
+  padding-bottom: 0px;
 }
 
 /* Title */
@@ -74,11 +75,13 @@ const INLINE_STYLES = `
   font-size: 0.95rem;
   color: #444;
   margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .onbeat-widget-course__opening {
   font-size: 0.9rem;
   color: darkred;
+  font-style: italic;
   margin-top: 0.0;'
   margin-bottom: 0;
 }
@@ -86,8 +89,9 @@ const INLINE_STYLES = `
 .onbeat-widget-course__closing {
   font-size: 0.9rem;
   color: darkred;
-  margin-top: 0.0;'
-  margin-bottom: 0;
+  font-style: italic;
+  margin-top: 0.0;
+  margin-bottom: 0.0;
 }
 
 /* Description */
@@ -96,7 +100,8 @@ const INLINE_STYLES = `
   white-space: pre-line;
   color: #333;
   word-break: break-word;
-  margin-top: 0;
+  margin-top: 0.8rem;
+  margin-bottom: 0.2rem;
 
   display: -webkit-box;
   -webkit-line-clamp: 3;       /* ← number of visible lines */
@@ -173,7 +178,8 @@ const INLINE_STYLES = `
     public_token: null,
     description: true,
     show_closed: true,
-    card_width: '100%'
+    card_width: '100%',
+    card_align: 'left'
   };
 
   let cachedCourseTemplate = null;
@@ -250,13 +256,25 @@ const INLINE_STYLES = `
   }
 
 
-  function renderCourseCard(container, course, template, show_description, card_width) {
+  function renderCourseCard(container, course, template, settings) {
     const fragment = template.content.cloneNode(true);
     const wrapper = fragment.firstElementChild;
 
     // Apply custom width
-    if (card_width) {
-      wrapper.style.maxWidth = card_width;
+    if (settings.card_width) {
+      wrapper.style.maxWidth = settings.card_width;
+    }
+
+    // Apply alignment
+    switch (settings.card_align) {
+      case 'center':
+        wrapper.style.alignSelf = 'center';
+        break;
+      case 'right':
+        wrapper.style.alignSelf = 'flex-end';
+        break;
+      default: // left
+        wrapper.style.alignSelf = 'flex-start';
     }
 
     if (!wrapper) {
@@ -318,7 +336,7 @@ const INLINE_STYLES = `
         }
 
     const description = wrapper.querySelector('.onbeat-widget-course__description');
-    if (show_description) {
+    if (settings.description) {
       if (description) {
         description.textContent = course.description ?? '';
       }
@@ -425,7 +443,7 @@ const INLINE_STYLES = `
     }
 
     container._courses = courses.map((course) =>
-      renderCourseCard(container, course, courseCardTemplate, settings.description, settings.card_width)
+      renderCourseCard(container, course, courseCardTemplate, settings)
     );
   }
 
