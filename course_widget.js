@@ -34,6 +34,8 @@ const INLINE_STYLES = `
   box-sizing: border-box;
   max-width: 100%;
   overflow-x: hidden;
+  padding-bottom: 6px;
+  margin-top: 20px;
 }
 
 /* Course Card */
