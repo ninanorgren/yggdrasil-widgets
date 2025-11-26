@@ -3,7 +3,7 @@
    * Base endpoint for course queries
    */
 
-  const DEFAULT_BASE_URL = 'https://onbeat.dance/api/get_courses';
+  const DEFAULT_BASE_URL = 'http://localhost:5000/api/get_courses';
   
   
 const INLINE_TEMPLATE_HTML = `
@@ -144,6 +144,13 @@ const INLINE_STYLES = `
 
 .onbeat-widget-course__readmore:hover {
   background: #2c4040;
+}
+
+.onbeat-widget-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #555;
+  padding: 1rem 0;
 }
 
 /* ------------------------------
@@ -412,6 +419,7 @@ const INLINE_STYLES = `
 
     const payload = await response.json();
     let courses = payload.result;
+    console.log(courses);
 
     if (!settings.show_closed) {
       const now = new Date();
@@ -425,6 +433,12 @@ const INLINE_STYLES = `
 
         return isOpen;
       });
+    }
+
+    // If no courses remain, show message and stop
+    if (!courses || courses.length === 0) {
+      showMessage(container, "Currently there are no upcoming courses available.");
+      return;
     }
 
     if (Array.isArray(container._courses)) {
