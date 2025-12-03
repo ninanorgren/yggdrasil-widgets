@@ -419,7 +419,6 @@ const INLINE_STYLES = `
 
     const payload = await response.json();
     let courses = payload.result;
-    console.log(courses);
 
     if (!settings.show_closed) {
       const now = new Date();
@@ -465,3 +464,5 @@ const INLINE_STYLES = `
 
   global.OnbeatCourseWidget = OnbeatCourseWidget;
 })(window);
+
+window.OnbeatCourseWidget = OnbeatCourseWidget;

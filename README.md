@@ -14,7 +14,7 @@ Insert the below snippet where on the website you want the widget to be:
 Place this code snippet in the bottom or top of your code:
 
 ```
-<script src="https://ninanorgren.github.io/yggdrasil-widgets/course_widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onbeat-course-widget/dist/course_widget.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             OnbeatCourseWidget({
@@ -39,3 +39,4 @@ The following parameters are customizable for the widget:
 * description: \<bool\> Show the first 4 lines of the course description. Defaults to true
 * show_closed: \<bool\> Show courses where the registration is closed. Defaults to false
 * card_align: \<str\> Alignment of cards on page. Valid options are 'left', 'center', 'right'. Defaults to 'left'
+
