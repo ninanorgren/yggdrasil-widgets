@@ -14,7 +14,7 @@ Insert the below snippet where on the website you want the widget to be:
 Place this code snippet in the bottom or top of your code:
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/onbeat-course-widget/dist/course_widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onbeat-course-widget@latest/dist/course_widget.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             OnbeatCourseWidget({

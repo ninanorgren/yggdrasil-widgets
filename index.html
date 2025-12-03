@@ -7,17 +7,23 @@
     
     <div class="onbeat-widget" id="onbeat-widget-container"></div>
     
-   <!--- <script src="https://ninanorgren.github.io/yggdrasil-widgets/course_widget.js"></script>--->
-    <script src="course_widget.js"></script>
+   <!--- <script src="https://ninanorgren.github.io/yggdrasil-widgets/course_widget.js"></script> --->
+   <script src="https://cdn.jsdelivr.net/npm/onbeat-course-widget@latest/dist/course_widget.js"></script>
+
+   <!--<script src="dist/course_widget.js"></script>-->
     <script>
         OnbeatCourseWidget({
             container: '#onbeat-widget-container',
-            course_type: ['all'],
-            public_token: 'bf5RUFJKh7r2TIpNRSZTJewVdfFP-rh1gOK6coG3tUQ',
-            description: false
+            course_type: ['events', 'courses'],
+            public_token: '1dKEWbSGiiE2Cdi4jZKnBc_kFCKo9zcBNmku7onVM8c',
+            description: true,
+            show_closed: false,
+            card_width: "70%",
+            card_align: "center"
         }).catch((error) => {
             console.error('OnbeatCourseWidget failed to initialise', error);
         });
     </script>
 </html>
 <!-- DsH6w0sDnclaIsKiVnhp8OTwdzMbx7fKXi-TNBwsuC8-->
+ 

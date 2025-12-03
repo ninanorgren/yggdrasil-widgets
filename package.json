@@ -1,6 +1,6 @@
 {
   "name": "onbeat-course-widget",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Embeddable Onbeat course widget for external websites.",
   "main": "dist/course_widget.js",
   "files": [
@@ -16,9 +16,10 @@
   "author": "Nina Norgren",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild src/course_widget.js --outfile=dist/course_widget.js --bundle --minify --format=iife --global-name=OnbeatCourseWidget"
+    "build": "esbuild src/course_widget.js --outfile=dist/course_widget.js --bundle --minify --format=iife"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"
   }
 }
+

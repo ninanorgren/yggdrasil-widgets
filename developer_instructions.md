@@ -16,6 +16,6 @@ Publish:
 
 **Update the package**
 
-```npm run build```
+```npm publish```
 
 Make sure to update the package version before updating
